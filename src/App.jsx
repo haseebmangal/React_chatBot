@@ -55,21 +55,57 @@ function ChatMessage({ message, sender }){ // we have another way to destructure
   )
 }
 
-export default function App(){
-  //01, to save this data we will use state hooks and create a varaible.
+function ChatMessages(){
   const chatMessages = [{
     message: "Hello chatBot",
-    sender: "user"
+    sender: "user",
+    id: "id1"
   }, {
     message: "Hello! How may I help you?",
-    sender: "bot"
+    sender: "bot",
+    id: "id2"
   }, {
     message: "can you get me today's date?",
-    sender: "user"
+    sender: "user",
+    id: "id3"
   }, {
     message: "Today's date is 2026-01-06 .",
-    sender: "bot"
-  }]
+    sender: "bot",
+    id: "id4"
+  }];
+
+  function sendMessage(){
+    chatMessages.push({
+      message: "This is a new message",
+      sender: "user",
+      id: crypto.randomUUID()
+    })
+    console.log(chatMessages)
+  }
+
+  return(
+    //onclick is an event handler function that will let us run a function when we click that button.
+    <>
+      <button onClick={sendMessage}>Send message</button>
+      {chatMessages.map((chatMessage) => {
+          return (
+            <ChatMessage 
+              message = {chatMessage.message}
+              sender = {chatMessage.sender}
+              //add key props to track changes in the array
+              key = {chatMessage.id}
+            />
+          )
+      })}
+  
+    </>
+  )
+
+}
+
+export default function App(){
+  //01, to save this data we will use state hooks and create a varaible.
+  
   // convert this data into components so we don't have to write it manually.
   // now Generate html using map method.
   // map is an array method which goes through each item in the array and returns a new array with results of calling a function on each item.
@@ -86,17 +122,14 @@ export default function App(){
 
   return (
     <>
-    <Chatbot />
-    {chatMessages.map((chatMessage) => {
-    return (
-      <ChatMessage 
-        message = {chatMessage.message}
-        sender = {chatMessage.sender}
-      />
-    )
-  })}
+      <Chatbot />
+      <ChatMessages />
     
 
     </>
   )
 }
+
+// after using usestate hooks now to make our chatbot website interactive we will add Event handlers.
+// Event handlers are functions that are called when an event occurs, such as a button click or a form submission.
+
