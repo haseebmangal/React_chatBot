@@ -56,25 +56,46 @@ function ChatMessage({ message, sender }){ // we have another way to destructure
 }
 
 export default function App(){
+  //01, to save this data we will use state hooks and create a varaible.
+  const chatMessages = [{
+    message: "Hello chatBot",
+    sender: "user"
+  }, {
+    message: "Hello! How may I help you?",
+    sender: "bot"
+  }, {
+    message: "can you get me today's date?",
+    sender: "user"
+  }, {
+    message: "Today's date is 2026-01-06 .",
+    sender: "bot"
+  }]
+  // convert this data into components so we don't have to write it manually.
+  // now Generate html using map method.
+  // map is an array method which goes through each item in the array and returns a new array with results of calling a function on each item.
+  // the function inside map method is called arrow function which is a shorter form of a function.
+  // we will insert the chatMessages data into ChatMessage component using props.
+  // const chatMessComp = chatMessages.map((chatMessage) => {
+  //   return (
+  //     <ChatMessage 
+  //       message = {chatMessage.message}
+  //       sender = {chatMessage.sender}
+  //     />
+  //   )
+  // })
+
   return (
     <>
     <Chatbot />
-    <ChatMessage 
-      message="Hello chatBot" 
-      sender="user" 
-    />
-    <ChatMessage 
-      message="Hello! How may I help you?" 
-      sender="bot" 
-    />
-    <ChatMessage 
-      message="Can you get me today's date?" 
-      sender="user" 
-    />
-    <ChatMessage 
-      message="Today's date is 2026-01-06  ." 
-      sender="bot" 
-    />
+    {chatMessages.map((chatMessage) => {
+    return (
+      <ChatMessage 
+        message = {chatMessage.message}
+        sender = {chatMessage.sender}
+      />
+    )
+  })}
+    
 
     </>
   )
