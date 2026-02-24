@@ -1,18 +1,58 @@
 import { useState } from 'react'
-import './App.css'
+import React from 'react'
+import { Chatbot } from 'supersimpledev';
+import './App.css';
 
 // chatbot
-function Chatbot(){
+function ChatInput({chatMessages, setChatMessages}){
+  const [inputText, setInputText] = React.useState('');
+  
+  function saveInputText(event){
+     setInputText(event.target.value)
+  }
+  function sendMessage(){
+    const newChatMessages = [
+      ...chatMessages,
+      {
+        message: inputText,
+        sender: "user",
+        id: crypto.randomUUID() 
+      }
+    ];
+    setChatMessages(newChatMessages);
+
+    const response = Chatbot.getResponse(inputText);
+     setChatMessages([
+      ...newChatMessages,
+      {
+        message: response,
+        sender: "bot",
+        id: crypto.randomUUID() 
+      }
+    ]);
+
+    setInputText('');
+  };
+
   return (
-    <div className='container'>
-      <h1>chatBot</h1>
+    <>
+    {/* <h1>chatBot</h1> */}
+    <div className='chat-input-container'>
+      
       {/* for cleaner code put each attribute on it's own line. */}
       <input 
+        className='chat-input'
         size="30" 
         placeholder='Send a message to Chatbot..'
+        onChange={saveInputText}
+        value={inputText}
       />
-      <button >Send</button>
+      <button 
+      className='send-button'
+      onClick={sendMessage}
+      >Send</button>
     </div>
+    </>
   )
 }
 
@@ -39,15 +79,25 @@ function ChatMessage({ message, sender }){ // we have another way to destructure
     */
 
   return(
-    <div>
+    <div className={
+      sender === 'user' 
+      ? 'chat-message-user' 
+      : 'chat-message-bot'
+    }>
       {/* using Guard operator &&  */}
       {sender === "bot" && 
-        (<img src="./src/assets/Ai.png" alt="user" width="50" />
+        (<img src="./src/assets/Ai.png" 
+        className='chat-message-profile'
+          />
         
       )}
+      <div className='chat-message-text'>
       {message}
+      </div>
       {sender === "user" && 
-        (<img src="./src/assets/User.png" alt="user" width="50" />
+        (<img src="./src/assets/User.png" 
+        className='chat-message-profile'
+         />
 
       )}
       
@@ -55,8 +105,33 @@ function ChatMessage({ message, sender }){ // we have another way to destructure
   )
 }
 
-function ChatMessages(){
-  const chatMessages = [{
+function ChatMessages({chatMessages}){
+  return(
+    //onclick is an event handler function that will let us run a function when we click that button.
+    <div className='chat-message-container'>
+      {chatMessages.map((chatMessage) => {
+          return (
+            <ChatMessage 
+              message = {chatMessage.message}
+              sender = {chatMessage.sender}
+              //add key props to track changes in the array
+              key = {chatMessage.id}
+            />
+          );
+      })}
+  
+    </div>
+  )
+
+}
+
+export default function App(){
+  // const [chatMessages, setChatMessages] = array; shortcut for this code is above line, called array destructuring.
+  // use array destructuring to get values from the array.
+  // const chatMessages = array[0];
+  // const setChatMessages = array[1];
+  // we used lifted state up technique to move the state up into the parent component app to be used by both parent and child components.
+  const [chatMessages, setChatMessages] = React.useState([{
     message: "Hello chatBot",
     sender: "user",
     id: "id1"
@@ -72,38 +147,7 @@ function ChatMessages(){
     message: "Today's date is 2026-01-06 .",
     sender: "bot",
     id: "id4"
-  }];
-
-  function sendMessage(){
-    chatMessages.push({
-      message: "This is a new message",
-      sender: "user",
-      id: crypto.randomUUID()
-    })
-    console.log(chatMessages)
-  }
-
-  return(
-    //onclick is an event handler function that will let us run a function when we click that button.
-    <>
-      <button onClick={sendMessage}>Send message</button>
-      {chatMessages.map((chatMessage) => {
-          return (
-            <ChatMessage 
-              message = {chatMessage.message}
-              sender = {chatMessage.sender}
-              //add key props to track changes in the array
-              key = {chatMessage.id}
-            />
-          )
-      })}
-  
-    </>
-  )
-
-}
-
-export default function App(){
+  }]);
   //01, to save this data we will use state hooks and create a varaible.
   
   // convert this data into components so we don't have to write it manually.
@@ -121,15 +165,24 @@ export default function App(){
   // })
 
   return (
-    <>
-      <Chatbot />
-      <ChatMessages />
+    <div className='app-container'>
+      
+      <ChatMessages 
+        chatMessages = {chatMessages}
+
+      />
+      <ChatInput
+        chatMessages = {chatMessages}
+        setChatMessages = {setChatMessages}      
+      />
     
 
-    </>
+    </div>
   )
 }
 
 // after using usestate hooks now to make our chatbot website interactive we will add Event handlers.
 // Event handlers are functions that are called when an event occurs, such as a button click or a form submission.
-
+// state: a way to store and manage data in a component that can change over time, causinng the component to re-render when the state changes.
+// state isn data that is connencted to the html, when we update this data, it will update the html.
+// event: is an object and contains detail about the event or about thechange. 
