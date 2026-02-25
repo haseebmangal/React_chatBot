@@ -106,9 +106,19 @@ function ChatMessage({ message, sender }){ // we have another way to destructure
 }
 
 function ChatMessages({chatMessages}){
+  const chatMessagesRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const containerElem = chatMessagesRef.current;
+    if (containerElem) {
+      containerElem.scrollTop = containerElem.scrollHeight;
+    }
+  }, [chatMessages])
+
   return(
     //onclick is an event handler function that will let us run a function when we click that button.
-    <div className='chat-message-container'>
+    <div className='chat-message-container'
+      ref = {chatMessagesRef}>
       {chatMessages.map((chatMessage) => {
           return (
             <ChatMessage 
